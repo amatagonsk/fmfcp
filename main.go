@@ -2,9 +2,12 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
-
 	cp "github.com/otiai10/copy"
+	"path/filepath"
+
+	_ "flag"
 	"github.com/tidwall/gjson"
 	_ "github.com/tidwall/gjson"
 	"github.com/yuin/goldmark"
@@ -17,7 +20,6 @@ import (
 	_ "golang.org/x/exp/slices"
 	"log"
 	"os"
-	"path/filepath"
 )
 
 /* `tag: publish` or `draft: false` */
@@ -88,9 +90,13 @@ func fileFilter(filePath string) (bool, error) {
 }
 
 func main() {
+	src, dest := argCheck()
+
+	//println(src, "\n", dest)
 	err := cp.Copy(
-		"C:\\Users\\E14\\Downloads\\tempdir\\tempdir",
-		"C:\\Users\\E14\\Downloads\\tempdir\\piyo",
+		//"C:\\Users\\E14\\Downloads\\tempdir\\tempdir",
+		//"C:\\Users\\E14\\Downloads\\tempdir\\piyo",
+		src, dest,
 		cp.Options{
 			Skip: func(info os.FileInfo, src, dest string) (bool, error) {
 				if info.IsDir() || filepath.Ext(src) != ".md" {
@@ -105,4 +111,35 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func argCheck() (string, string) {
+	var helpFlag bool
+	var cpSrc string
+	var cpDest string
+
+	flag.BoolVar(&helpFlag, "h", false, "show help message")
+	flag.StringVar(&cpSrc, "src", "", "cp src")
+	flag.StringVar(&cpDest, "dest", "", "cp dest")
+	flag.Parse()
+	if helpFlag {
+		printHelp()
+	}
+	args := flag.Args()
+	if len(args) != 2 {
+		printHelp()
+		log.Fatal("args count wrong")
+	}
+	cpSrc, cpDest = args[0], args[1]
+	return cpSrc, cpDest
+}
+
+func printHelp() {
+	helpStr := `FMfilter is filter copy tool. from markdown frontmatter.
+check ".md" file & frontmatter contains "tag: publish" or "draft: false" are not copy.
+not ".md" file are just copy.
+usage: FMfilter $src $dist`
+	fmt.Println(helpStr)
+	fmt.Println("---")
+	flag.PrintDefaults()
 }
