@@ -4,10 +4,14 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	cp "github.com/otiai10/copy"
 	"path/filepath"
 
+	cp "github.com/otiai10/copy"
+
 	_ "flag"
+	"log"
+	"os"
+
 	"github.com/tidwall/gjson"
 	_ "github.com/tidwall/gjson"
 	"github.com/yuin/goldmark"
@@ -18,8 +22,6 @@ import (
 	_ "go.abhg.dev/goldmark/frontmatter"
 	"golang.org/x/exp/slices"
 	_ "golang.org/x/exp/slices"
-	"log"
-	"os"
 )
 
 /* `tag: publish` or `draft: false` */
@@ -135,10 +137,10 @@ func argCheck() (string, string) {
 }
 
 func printHelp() {
-	helpStr := `FMfilter is filter copy tool. from markdown frontmatter.
+	helpStr := `fmfcp is Front Matter Filter CoPy tool.
 check ".md" file & frontmatter contains "tag: publish" or "draft: false" are not copy.
 not ".md" file are just copy.
-usage: FMfilter $src $dist`
+usage: fmfcp $src $dist`
 	fmt.Println(helpStr)
 	fmt.Println("---")
 	flag.PrintDefaults()
