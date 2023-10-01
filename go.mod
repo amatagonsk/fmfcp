@@ -1,4 +1,4 @@
-module main
+module fmfcp
 
 go 1.20
 
