@@ -26,27 +26,27 @@ import (
 
 /* `tag: publish` or `draft: false` */
 func isPublishCheck(frontMatter string) bool {
-	draftGj := gjson.Parse(frontMatter).Get("draft")
-	var isDraft bool
-	err := json.Unmarshal([]byte(draftGj.String()), &isDraft)
-	if err != nil {
-		isDraft = true
-		log.Fatal(err)
-	} else {
-		isDraft = draftGj.Bool()
-	}
-
 	// empty front matter
 	if frontMatter == "" {
 		return false
 	} else {
+		draftGj := gjson.Parse(frontMatter).Get("draft")
+		var isDraft bool
+		err := json.Unmarshal([]byte(draftGj.String()), &isDraft)
+		if err != nil {
+			isDraft = false
+			// log.Panic(err)
+		} else {
+			isDraft = draftGj.Bool()
+		}
+
 		tagsGj := gjson.Parse(frontMatter).Get("tags")
 		var tags []string
 		var isPublishTagContain bool
-		err := json.Unmarshal([]byte(tagsGj.String()), &tags)
+		err = json.Unmarshal([]byte(tagsGj.String()), &tags)
 		if err != nil {
 			isPublishTagContain = false
-			log.Fatal(err)
+			log.Panic(err)
 		} else {
 			isPublishTagContain = slices.Contains(tags, "publish")
 		}
@@ -107,8 +107,6 @@ func main() {
 
 	//println(src, "\n", dest)
 	err := cp.Copy(
-		//"C:\\Users\\E14\\Downloads\\tempdir\\tempdir",
-		//"C:\\Users\\E14\\Downloads\\tempdir\\piyo",
 		src, dest,
 		cp.Options{
 			Skip: func(info os.FileInfo, src, dest string) (bool, error) {
@@ -122,7 +120,7 @@ func main() {
 		},
 	)
 	if err != nil {
-		log.Fatal(err)
+		log.Panic(err)
 	}
 }
 
@@ -141,7 +139,7 @@ func argCheck() (string, string) {
 	args := flag.Args()
 	if len(args) != 2 {
 		printHelp()
-		log.Fatal("args count wrong")
+		log.Panic("args count wrong")
 	}
 	cpSrc, cpDest = args[0], args[1]
 	return cpSrc, cpDest
