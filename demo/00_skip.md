@@ -1,8 +1,8 @@
 ---
 title: demo
 tags:
-- draft
 - demo
+draft: false
 ---
 
 # demo

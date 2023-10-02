@@ -26,7 +26,6 @@ import (
 
 /* `tag: publish` or `draft: false` */
 func isPublishCheck(frontMatter string) bool {
-	//println(frontMatter)
 	draftGj := gjson.Parse(frontMatter).Get("draft")
 	var isDraft bool
 	err := json.Unmarshal([]byte(draftGj.String()), &isDraft)
@@ -37,18 +36,28 @@ func isPublishCheck(frontMatter string) bool {
 		isDraft = draftGj.Bool()
 	}
 
-	tagsGj := gjson.Parse(frontMatter).Get("tags")
-	var tags []string
-	var isTagContain bool
-	err = json.Unmarshal([]byte(tagsGj.String()), &tags)
-	if err != nil {
-		isTagContain = false
-		log.Fatal(err)
+	// empty front matter
+	if frontMatter == "" {
+		return false
 	} else {
-		isTagContain = slices.Contains(tags, "publish")
+		tagsGj := gjson.Parse(frontMatter).Get("tags")
+		var tags []string
+		var isPublishTagContain bool
+		err := json.Unmarshal([]byte(tagsGj.String()), &tags)
+		if err != nil {
+			isPublishTagContain = false
+			log.Fatal(err)
+		} else {
+			isPublishTagContain = slices.Contains(tags, "publish")
+		}
+
+		isPublish := !(isDraft || isPublishTagContain)
+		if isPublish {
+			return false
+		} else {
+			return true
+		}
 	}
-	isPublish := !isDraft || isTagContain
-	return isPublish
 }
 
 func fileFilter(filePath string) (bool, error) {
@@ -88,6 +97,8 @@ func fileFilter(filePath string) (bool, error) {
 	}
 	// isPublishCheck: true:publish, false:draft
 	// copySkip: true:skip, false:copy
+	// fmt.Println("--------")
+	// fmt.Println(filePath)
 	return !isPublishCheck(fm), nil
 }
 
