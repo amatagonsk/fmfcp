@@ -78,27 +78,23 @@ func fileFilter(filePath string) (bool, error) {
 
 	ctx := parser.NewContext()
 	if err := md.Convert([]byte(bytes), io.Discard, parser.WithContext(ctx)); err != nil {
-		return false, fmt.Errorf("convert markdown: %w", err)
+		return false, fmt.Errorf("convert error: %s\n%w", filePath, err)
 	}
 
 	var fm string
 	if data := frontmatter.Get(ctx); data != nil {
 		var meta map[string]any
 		if err := data.Decode(&meta); err != nil {
-			return false, fmt.Errorf("decode frontmatter: %w", err)
+			return false, fmt.Errorf("decode error: %s\n%w", filePath, err)
 		}
 
 		formatted, err := json.MarshalIndent(meta, "", "  ")
 		if err != nil {
-			return false, fmt.Errorf("format frontmatter: %w", err)
+			return false, fmt.Errorf("format error: %s\n%w", filePath, err)
 		}
 
 		fm = string(formatted)
 	}
-	// isPublishCheck: true:publish, false:draft
-	// copySkip: true:skip, false:copy
-	// fmt.Println("--------")
-	// fmt.Println(filePath)
 	return !isPublishCheck(fm), nil
 }
 
