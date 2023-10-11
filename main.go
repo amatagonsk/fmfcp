@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io"
 	"path/filepath"
 
 	cp "github.com/otiai10/copy"
@@ -76,8 +77,7 @@ func fileFilter(filePath string) (bool, error) {
 	)
 
 	ctx := parser.NewContext()
-	//var bb io.Writer
-	if err := md.Convert([]byte(bytes), os.Stdout, parser.WithContext(ctx)); err != nil {
+	if err := md.Convert([]byte(bytes), io.Discard, parser.WithContext(ctx)); err != nil {
 		return false, fmt.Errorf("convert markdown: %w", err)
 	}
 
@@ -111,9 +111,13 @@ func main() {
 		cp.Options{
 			Skip: func(info os.FileInfo, src, dest string) (bool, error) {
 				if info.IsDir() || filepath.Ext(src) != ".md" {
+					fmt.Println(src)
 					return false, nil
 				} else {
 					isSkip, err := fileFilter(filepath.Join(src))
+					if !isSkip {
+						fmt.Println(src)
+					}
 					return isSkip, err
 				}
 			},
