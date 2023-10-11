@@ -130,27 +130,29 @@ func argCheck() (string, string) {
 	var cpDest string
 
 	flag.BoolVar(&helpFlag, "h", false, "show help message")
-	flag.StringVar(&cpSrc, "src", "", "cp src")
-	flag.StringVar(&cpDest, "dest", "", "cp dest")
+	flag.BoolVar(&helpFlag, "help", false, "show help message")
+	flag.StringVar(&cpSrc, "src", "", "cp source")
+	flag.StringVar(&cpDest, "dest", "", "cp destination")
 	flag.Parse()
 	if helpFlag {
-		printHelp()
+		printHelpAndExit()
 	}
 	args := flag.Args()
 	if len(args) != 2 {
-		printHelp()
-		log.Panic("args count wrong")
+		printHelpAndExit()
 	}
 	cpSrc, cpDest = args[0], args[1]
 	return cpSrc, cpDest
 }
 
-func printHelp() {
+func printHelpAndExit() {
 	helpStr := `fmfcp is Front Matter Filter CoPy tool.
-check ".md" file & frontmatter contains "tag: publish" or "draft: false" are not copy.
+check ".md" file & frontmatter contains "tag: publish" or "draft: true" are copy.
 not ".md" file are just copy.
-usage: fmfcp $src $dist`
+
+usage: fmfcp $src $dest`
 	fmt.Println(helpStr)
-	fmt.Println("---")
-	flag.PrintDefaults()
+	// fmt.Println("---")
+	// flag.PrintDefaults()
+	os.Exit(0)
 }
