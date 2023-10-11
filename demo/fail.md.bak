@@ -1,0 +1,19 @@
+---
+title: fail_file
+tags:
+  - publish
+	- demo
+---
+
+# fail reason
+indent tab ('U+0009', '\t') ↓
+
+---
+tags:
+	- demo
+---
+
+
+> [YAML Ain’t Markup Language (YAML™) revision 1.2.2](https://yaml.org/spec/1.2.2/#61-indentation-spaces)
+> 
+> To maintain portability, tab characters must not be used in indentation, since different systems treat tabs differently.
