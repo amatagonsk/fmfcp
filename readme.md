@@ -13,7 +13,7 @@ not ".md" file are just copy.
 
 ## install
 
-`go install github.com/amatagonsk/go-fmfcp@latest`
+`go install github.com/amatagonsk/fmfcp@latest`
 
 
 ## usage(help)

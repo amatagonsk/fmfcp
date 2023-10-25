@@ -1,4 +1,4 @@
-module github.com/amatagonsk/go-fmfcp
+module github.com/amatagonsk/fmfcp
 
 go 1.21.1
 
